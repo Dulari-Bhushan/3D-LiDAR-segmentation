@@ -1,0 +1,18 @@
+run_file,category,status,failure_reason,best_acc,best_iou,best_recall,notes
+current_train.log,General,failed,nccl_timeout,NA,NA,NA,
+full_method_2gpu_20260331_095945.log,Full method (ablation family),completed,none,NA,NA,NA,Final run used for main ablation summary.
+full_method_2gpu_20260331_100011.log,Full method (ablation family),failed,childfailederror,NA,NA,NA,Final run used for main ablation summary.
+full_method_2gpu_20260331_100054.log,Full method (ablation family),completed,none,0.4424886107444763,0.3922201991081238,0.44129958748817444,Final run used for main ablation summary.
+geom_fusion_full_2gpu_20260403_121257.log,Geo-fusion + interpretable objective,completed,none,0.45247209072113037,0.39990606904029846,0.4468397796154022,Best balanced novelty run in final method family.
+geom_fusion_only_2gpu_20260402_181512.log,Geo-fusion only,completed,none,0.5633562207221985,0.47966164350509644,0.5264710187911987,Strongest standalone result in this log family.
+kitti_00_01_in_domain_2gpu_20260330_015043.log,"In-domain split (00+01, 80/20)",completed,none,0.4771645665168762,0.43604975938796997,0.5035808682441711,"Completed; strong in-domain score, not directly comparable to seq08 transfer."
+kitti_00_01_val08_2gpu_20260328_122234.log,"Cross-sequence split (00+01 train, 08 val)",failed,childfailederror,NA,NA,NA,Failed mostly due to distributed NCCL timeout/elastic child failure.
+kitti_00_01_val08_gpu1_2_20260328_122442.log,"Cross-sequence split (00+01 train, 08 val)",failed,nccl_timeout,NA,NA,NA,Failed mostly due to distributed NCCL timeout/elastic child failure.
+kitti_00_01_val08_gpu1_2_20260328_123639.log,"Cross-sequence split (00+01 train, 08 val)",failed,nccl_timeout,NA,NA,NA,Failed mostly due to distributed NCCL timeout/elastic child failure.
+kitti_train_2gpu_20260328_144458.log,Early baseline training,completed,none,0.24248802661895752,0.17954091727733612,0.2847224473953247,Low baseline quality from early setup.
+kitti_train_2gpu_cityscapes_20260329_162122.log,Cityscapes-initialized trials,completed,none,NA,NA,NA,Observed unstable or low gains; initialization mismatch likely for range-view LiDAR domain.
+kitti_train_3gpu_cityscapes_20260329_171347.log,Cityscapes-initialized trials,completed,none,0.054875556379556656,0.02027796022593975,0.05361644923686981,Observed unstable or low gains; initialization mismatch likely for range-view LiDAR domain.
+kitti_train_3gpu_cityscapes_20260329_172408.log,Cityscapes-initialized trials,failed,childfailederror,0.19841989874839783,0.15009890496730804,0.24310488998889923,Observed unstable or low gains; initialization mismatch likely for range-view LiDAR domain.
+kitti_train_3gpu_cityscapes_resume_20260329_232617.log,Cityscapes-initialized trials,failed,childfailederror,NA,NA,NA,Observed unstable or low gains; initialization mismatch likely for range-view LiDAR domain.
+kitti_train_3gpu_cityscapes_resume_20260329_232826.log,Cityscapes-initialized trials,completed,none,0.21146976947784424,0.15007755160331726,0.2483147531747818,Observed unstable or low gains; initialization mismatch likely for range-view LiDAR domain.
+seq00_80_20_train.log,General,completed,none,NA,NA,NA,

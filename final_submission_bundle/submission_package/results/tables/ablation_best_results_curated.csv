@@ -1,0 +1,5 @@
+run,best_acc,best_iou,best_recall,iou_delta_vs_baseline
+Baseline,0.4668,0.3629,0.4746,+0.0000
+Proto Only,0.4481,0.2767,0.3506,-0.0861
+Geo+Proto,0.4348,0.3861,0.4394,+0.0233
+Full Method,0.4425,0.3922,0.4413,+0.0294

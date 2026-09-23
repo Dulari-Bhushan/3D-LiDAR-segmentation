@@ -1,0 +1,7 @@
+*.pyc
+*core.*
+__pycache__/
+*.log
+events.out.tfevents.*
+checkpoint/
+preds/

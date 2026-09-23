@@ -1,0 +1,114 @@
+import os
+import torch
+import torch.distributed as dist
+import builtins
+import datetime
+
+
+def setup_for_distributed(is_master):
+    '''
+    This function disables printing when not in master process
+    '''
+    builtin_print = builtins.print
+
+    def print(*args, **kwargs):
+        force = kwargs.pop('force', False)
+        force = force or (get_world_size() > 8)
+        if is_master or force:
+            now = datetime.datetime.now().time()
+            builtin_print('[{}] '.format(now), end='')  # print with time stamp
+            builtin_print(*args, **kwargs)
+
+    builtins.print = print
+
+
+def get_world_size():
+    if not is_dist_avail_and_initialized():
+        return 1
+    return dist.get_world_size()
+
+
+def is_dist_avail_and_initialized():
+    if not dist.is_available():
+        return False
+    if not dist.is_initialized():
+        return False
+    return True
+
+
+def get_rank():
+    if not is_dist_avail_and_initialized():
+        return 0
+    return dist.get_rank()
+
+def is_main_process():
+    return get_rank() == 0
+
+
+def dist_barrier():
+    if is_dist_avail_and_initialized():
+        dist.barrier()
+
+
+def init_distributed_mode(args):
+    # NOTE: the launcher environment is the only reliable signal here. A previous
+    # `elif hasattr(args, 'rank')` branch always fired, because Option always
+    # defines self.rank, which made the single-process path unreachable and sent
+    # plain `python main.py` into init_process_group('env://') with no MASTER_ADDR.
+    if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
+        args.rank = int(os.environ['RANK'])
+        args.world_size = int(os.environ['WORLD_SIZE'])
+        args.gpu = int(os.environ['LOCAL_RANK'])
+    elif 'SLURM_PROCID' in os.environ:
+        args.rank = int(os.environ['SLURM_PROCID'])
+        args.world_size = int(os.environ.get('SLURM_NTASKS', 1))
+        args.gpu = args.rank % torch.cuda.device_count()
+    else:
+        print('Not using distributed mode (single process)')
+        args.distributed = False
+        args.rank = 0
+        args.world_size = 1
+        if args.gpu is None:
+            args.gpu = 0
+        return
+
+    args.distributed = True
+    args.dist_backend = 'nccl'
+    print('| distributed init (rank {}): {}'.format(args.rank, args.dist_url), flush=True)
+    torch.distributed.init_process_group(
+        backend=args.dist_backend,
+        init_method=args.dist_url,
+        world_size=args.world_size,
+        rank=args.rank,
+        # The default 30 min watchdog is what killed the sequence-08 validation
+        # runs: a full val pass over 4071 frames can exceed it between collectives.
+        timeout=datetime.timedelta(hours=2),
+    )
+
+def setup_logger_for_distributed(is_master, logger):
+    '''
+    This function disables printing when not in master process
+    '''
+
+    logger_info = logger.info
+
+    def info(*args, **kwargs):
+        force = kwargs.pop('force', False)
+        if is_master or force:
+            logger_info(*args, **kwargs)
+
+    logger.info = info
+
+def setup_tensorboard_logger_for_distributed(is_master, tensorboard_logger):
+    '''
+    This function disables printing when not in master process
+    '''
+
+    tensorboard_logger_scalar_summary = tensorboard_logger.scalar_summary
+
+    def scalar_summary(*args, **kwargs):
+        force = kwargs.pop('force', False)
+        if is_master or force:
+            tensorboard_logger_scalar_summary(*args, **kwargs)
+
+    tensorboard_logger.scalar_summary = scalar_summary
